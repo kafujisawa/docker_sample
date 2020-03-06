@@ -6,7 +6,6 @@ pipeline{
 		CPPTEST_INS_DIR='/opt/app/parasoft/cpptest/10.4'
 		CPPTEST_SCAN_PROJECT_NAME='ATM'
 		CPPTEST_SCAN_OUTPUT_FILE='/var/lib/jenkins/workspace/docker_sample/ATM/cpptestscan.bdf'
-		CPPTEST_SCAN_TRACECOMMAND='arm-none-eabi-gcc\|arm-none-eabi-g++'
 	}
 	stages {
 		stage('Check out') {
@@ -33,6 +32,7 @@ pipeline{
 					--workdir=$WORKSPACE/ATM \\
 					$CONTAINAR_NAME \\
 					$CPPTEST_INS_DIR/cpptesttrace \\
+					--cpptesttraceTraceCommand=arm-none-eabi-gcc\\|arm-none-eabi-g++ \\
 					./build.sh'''
 			}
 		}
