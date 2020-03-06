@@ -87,9 +87,7 @@ pipeline{
 		}
 		stage('archiveArtifacts') {
 			steps {
-				archiveArtifacts 'Jenkinsfile'
-				archiveArtifacts '**/reports/reports.xml'
-				archiveArtifacts '**/reports/reports.html'
+				archiveArtifacts '**'
 			}
 		}
 	}
