@@ -8,6 +8,11 @@ pipeline{
 		CPPTEST_SCAN_OUTPUT_FILE='/var/lib/jenkins/workspace/docker_sample/ATM/cpptestscan.bdf'
 	}
 	stages {
+		stage('cleanWs') {
+			steps {
+				cleanWs()
+			}
+		}
 		stage('Check out') {
 			steps {
 				checkout scm
@@ -70,6 +75,12 @@ mkdir -p $TMPDIR'''
 				docker stop $CONTAINAR_NAME
 				docker rm $CONTAINAR_NAME
 				'''
+			}
+		}
+		stage('archiveArtifacts') {
+			steps {
+				archiveArtifacts 'Jenkinsfile'
+				archiveArtifacts 'build.gradle'
 			}
 		}
 	}
