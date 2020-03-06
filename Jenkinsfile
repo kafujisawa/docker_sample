@@ -48,7 +48,7 @@ pipeline{
 					-data $WORKSPACE/cpptest_workspace \\
 					-bdf $WORKSPACE/ATM/cpptestscan.bdf \\
 					-localsettings $WORKSPACE/../tools/$CONTAINAR_NAME/local_settings/import.properties
-mkdir -p $TMPDIR'''
+					mkdir -p $TMPDIR'''
 			}
 		}
 		stage('Run Statick analysis') {
@@ -66,7 +66,15 @@ mkdir -p $TMPDIR'''
 		}
 		stage('Run Metrics analysis') {
 			steps {
-				sleep 2
+				    sh label: '', script: '''
+					$CPPTEST_INS_DIR/cpptestcli \\
+					-data $WORKSPACE/cpptest_workspace \\
+					-config "builtin://Metrics" \\
+					-localsettings $WORKSPACE/../tools/$CONTAINAR_NAME/local_settings/import.properties \\
+					-report reports \\
+					-resource ATM \\
+					-showdetails \\
+					-appconsole stdout'''
 			}
 		}
 		stage('Delete docker container') {
@@ -80,7 +88,6 @@ mkdir -p $TMPDIR'''
 		stage('archiveArtifacts') {
 			steps {
 				archiveArtifacts 'Jenkinsfile'
-				archiveArtifacts 'build.gradle'
 			}
 		}
 	}
