@@ -1,12 +1,12 @@
 pipeline{
 	agent any;
 	environment {
-		TMPDIR=/var/lib/jenkins/workspace/docker_sample/.cpptesttmp
-		CONTAINAR_NAME=atm_build
-		CPPTEST_INS_DIR=/opt/app/parasoft/cpptest/10.4
-		CPPTEST_SCAN_PROJECT_NAME=ATM
-		CPPTEST_SCAN_OUTPUT_FILE=/var/lib/jenkins/workspace/docker_sample/ATM/cpptestscan.bdf
-		CPPTEST_SCAN_TRACECOMMAND=arm-none-eabi-gcc\|arm-none-eabi-g++
+		TMPDIR='/var/lib/jenkins/workspace/docker_sample/.cpptesttmp'
+		CONTAINAR_NAME='atm_build'
+		CPPTEST_INS_DIR='/opt/app/parasoft/cpptest/10.4'
+		CPPTEST_SCAN_PROJECT_NAME='ATM'
+		CPPTEST_SCAN_OUTPUT_FILE='/var/lib/jenkins/workspace/docker_sample/ATM/cpptestscan.bdf'
+		CPPTEST_SCAN_TRACECOMMAND='arm-none-eabi-gcc\|arm-none-eabi-g++'
 	}
 	stages {
 		stage('Check out') {
