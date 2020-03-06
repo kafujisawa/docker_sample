@@ -42,7 +42,8 @@ pipeline{
 					$CPPTEST_INS_DIR/cpptestcli \\
 					-data $WORKSPACE/cpptest_workspace \\
 					-bdf $WORKSPACE/ATM/cpptestscan.bdf \\
-					-localsettings $WORKSPACE/../tools/$CONTAINAR_NAME/local_settings/import.properties'''
+					-localsettings $WORKSPACE/../tools/$CONTAINAR_NAME/local_settings/import.properties
+mkdir -p $TMPDIR'''
 			}
 		}
 		stage('Run Statick analysis') {
