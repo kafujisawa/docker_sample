@@ -1,8 +1,13 @@
 pipeline{
 	agent any;
 	environment {
-		TMPDIR='$WORKSPACE/.cpptesttmp'
-	}	
+		TMPDIR=$WORKSPACE/.cpptesttmp
+		CONTAINAR_NAME=atm_build
+		CPPTEST_INS_DIR=/opt/app/parasoft/cpptest/10.4
+		CPPTEST_SCAN_PROJECT_NAME=ATM
+		CPPTEST_SCAN_OUTPUT_FILE=$WORKSPACE/$CPPTEST_SCAN_PROJECT_NAME/cpptestscan.bdf
+		CPPTEST_SCAN_TRACECOMMAND=arm-none-eabi-gcc\|arm-none-eabi-g++
+	}
 	stages {
 		stage('Check out') {
 			steps {
@@ -13,7 +18,7 @@ pipeline{
 			steps {
 				sh label: '', script: '''
 					docker run \\
-					--name atm_build \\
+					--name $CONTAINAR_NAME \\
 					--workdir=$WORKSPACE/ATM \\
 					-itd \\
 					-v $WORKSPACE:$WORKSPACE \\
@@ -26,30 +31,27 @@ pipeline{
 				sh label: '', script: '''
 					docker exec \\
 					--workdir=$WORKSPACE/ATM \\
-					atm_build \\
-					/opt/app/parasoft/cpptest/10.4/cpptesttrace \\
-					--cpptesttraceOutputFile=$WORKSPACE/ATM/cpptestscan.bdf \\
-					--cpptesttraceProjectName=ATM \\
-					--cpptesttraceTraceCommand=arm-none-eabi-gcc\\|arm-none-eabi-g++ \\
+					$CONTAINAR_NAME \\
+					$CPPTEST_INS_DIR/cpptesttrace \\
 					./build.sh'''
 			}
 		}
 		stage('Import C++test Project form BDF') {
 			steps {
 				sh label: '', script: '''
-					/opt/app/parasoft/cpptest/10.4/cpptestcli \\
+					$CPPTEST_INS_DIR/cpptestcli \\
 					-data $WORKSPACE/cpptest_workspace \\
 					-bdf $WORKSPACE/ATM/cpptestscan.bdf \\
-					-localsettings $WORKSPACE/../tools/atm_build/local_settings/import.properties'''
+					-localsettings $WORKSPACE/../tools/$CONTAINAR_NAME/local_settings/import.properties'''
 			}
 		}
 		stage('Run Statick analysis') {
 			steps {
 				    sh label: '', script: '''
-					/opt/app/parasoft/cpptest/10.4/cpptestcli \\
+					$CPPTEST_INS_DIR/cpptestcli \\
 					-data $WORKSPACE/cpptest_workspace \\
 					-config "builtin://MISRA C 2012" \\
-					-localsettings $WORKSPACE/../tools/atm_build/local_settings/import.properties \\
+					-localsettings $WORKSPACE/../tools/$CONTAINAR_NAME/local_settings/import.properties \\
 					-report reports \\
 					-resource ATM \\
 					-showdetails \\
@@ -64,8 +66,8 @@ pipeline{
 		stage('Delete docker container') {
 			steps {
 				sh label: '', script: '''
-				docker stop atm_build
-				docker rm atm_build
+				docker stop $CONTAINAR_NAME
+				docker rm $CONTAINAR_NAME
 				'''
 			}
 		}
